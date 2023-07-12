@@ -1,5 +1,6 @@
 package com.ohgiraffers.securitysession.config;
 
+import com.ohgiraffers.securitysession.auth.command.domain.aggregate.vo.UserRole;
 import com.ohgiraffers.securitysession.config.handler.AuthenFailHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,7 +24,6 @@ public class SecurityConfig {
 
     @Bean
     public PasswordEncoder passwordEncoder(){
-        System.out.println("pass Encoder 등록");
         // 비밀번호 암호화 방식
         return new BCryptPasswordEncoder();
     }
@@ -34,7 +34,7 @@ public class SecurityConfig {
                 // (/list) -> 이와 같은 것을 리소르라고 한다.
                 // 아래의 mvcMatchers는 요청 주소 식별에서 (/list/)와 같이 모호한 요청도 식별을 해준다.
                 // 추가됨
-                .mvcMatchers("/","/app/login","/app/loginfail")
+                .mvcMatchers("/*","/app/login","/app/loginfail")
                 // 해당 설정은 위에 정의된 리소스 요청에 모든 권한의 사용자를 허용해준다는 것이다.
                 .permitAll() //이와 반대인 denyAll()도 있으며 이것은 모두 제안한다.
                 // .rememberMe() : 로그인된 사용자만 접근을 허용해준다.
@@ -42,7 +42,7 @@ public class SecurityConfig {
                 // 아래의 antMatchers는 요청 주소 식별을 정확하게 하지 않으면 요청을 인식하지 못한다.
                 .antMatchers("/employee/list")
                 // 아래 hasAnyRole은 해당 위의 리소스 요청시 다음 권한을 가진 사용자만 접근을 허용해준다.
-                .hasAnyAuthority("ADMIN","USER")
+                .hasAnyAuthority(UserRole.USER.getValue(), UserRole.ADMIN.getValue())
                 .antMatchers("/employee/file").hasAnyAuthority("ADMIN")
                 // 인증된 사용자만 접근이 되어야 한다.
                 .anyRequest().authenticated()

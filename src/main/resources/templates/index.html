@@ -2,12 +2,19 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       layout:decorate="~{common/layouts/layout}">
 
 <th:block layout:fragment="test">
+    <div th:if="${#authentication.isAuthenticated()}">
+        <p> 로그인을 해주세요</p>
+        <button onclick="location.href='app/login'">로그인</button>
+    </div>
+    <div th:if="${#authentication.authenticated}">
+        <p th:text="${#authentication.name}"></p>
+        <p th:text="${#authentication.authorities}"></p>
+        <p th:text="${#authentication.getPrincipal()}"></p>
+        <button onclick="location.href='app/logout'">로그아웃</button>
+    </div>
 </th:block>
 </html>
-
-<script th:inline="javascript">
-    window.location.href = "app/login";
-</script>
